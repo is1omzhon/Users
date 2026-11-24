@@ -16,5 +16,14 @@ internal class Program
         };
 
         userService.CreateUser(newUser);
+        User storageUser = userService.GetUserById(2);
+        if (storageUser != null)
+        {
+            userService.Print(storageUser);   
+        }
+        else
+        {
+            Console.WriteLine("User topilmadi");
+        }
     }
 }

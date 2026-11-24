@@ -15,4 +15,29 @@ public class UserService : IUserService
         _users.Add(user);
         Console.WriteLine($"{user.FIO} qo'shildi");
     }
+
+    public User GetUserById(int id)
+    {
+        foreach(User item in _users)
+        {
+            if(item.Id == id)
+            {
+                return item;
+            }
+            
+        }
+
+        return null;   
+    }
+
+    public void Print(User user)
+    {
+        Console.WriteLine
+        (
+            $""" 
+            Id: {user.Id}, 
+            FIO : {user.FIO}
+            """
+        );
+    }
 }
