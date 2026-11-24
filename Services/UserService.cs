@@ -5,13 +5,14 @@ public class UserService : IUserService
 {
     private List<User> _users;
 
-    public UserService(List<User> users)
+    public UserService()
     {
-        this._users = users;
+        this._users = new List<User>();
     }
 
-    public void CreateUser(string name, string email)
+    public void CreateUser(User user)
     {
-        throw new NotImplementedException();
+        _users.Add(user);
+        Console.WriteLine($"{user.FIO} qo'shildi");
     }
 }

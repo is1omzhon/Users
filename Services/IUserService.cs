@@ -1,7 +1,8 @@
+using Users.Models;
+
 namespace Users.Services;
 
 public interface IUserService
 {
-    void CreateUser(string name, string email);
+    void CreateUser(User user);
 }
-
