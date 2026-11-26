@@ -18,16 +18,15 @@ public class UserService : IUserService
 
     public User GetUserById(int id)
     {
-        foreach(User item in _users)
+        foreach (User item in _users)
         {
-            if(item.Id == id)
+            if (item.Id == id)
             {
                 return item;
             }
-            
         }
 
-        return null;   
+        return null;
     }
 
     public void Print(User user)
@@ -37,7 +36,30 @@ public class UserService : IUserService
             $""" 
             Id: {user.Id}, 
             FIO : {user.FIO}
+            Email : {user.Email}
+            Address : {user.Address}
             """
         );
     }
+
+    public void UpdateUser(User user)
+    {
+        var findUser = _users.Find(u => u.Id == user.Id);
+        if (findUser == null) return;
+
+        findUser.FIO = user.FIO;
+        findUser.Email = user.Email;
+        findUser.Address = user.FIO;
+        findUser.PhoneNmber = user.PhoneNmber;
+        Console.WriteLine("User Updated");
+    }
+
+    public void DeleteUser(int id)
+    {
+        if (_users.RemoveAll(u => u.Id == id) == 0)
+            Console.WriteLine("User topilmadi");
+
+        else Console.WriteLine("User deleted!");
+    }
+
 }
