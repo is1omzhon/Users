@@ -1,4 +1,5 @@
-﻿using Users.Models;
+﻿using System.Net;
+using Users.Models;
 using Users.Services;
 
 internal class Program
@@ -6,56 +7,112 @@ internal class Program
     private static void Main(string[] args)
     {
         IUserService userService = new UserService();
-        User newUser = new User
+
+        bool isRunning = true;
+        while (isRunning)
         {
-            Id = 1,
-            Address = "Uzbekistan, Namangan",
-            Email = "user@gmail.com",
-            FIO = "Alisher Nosirov Umarovich",
-            PhoneNmber = "+998935678844",
+            Console.WriteLine("========================");
+            Console.WriteLine(" USER SERVICE MENU");
+            Console.WriteLine("========================");
+            Console.WriteLine("1. Foydalanuvchi yaratish");
+            Console.WriteLine("2. ID orqali ko‘rish");
+            Console.WriteLine("3. Barcha foydalanuvchilarni ko‘rish");
+            Console.WriteLine("4. Foydalanuvchini yangilash");
+            Console.WriteLine("5. Foydalanuvchini o‘chirish");
+            Console.WriteLine("0. Chiqish");
+            Console.WriteLine("========================");
+            Console.WriteLine("Tanlang:");
+
+            if (!int.TryParse(Console.ReadLine(), out int choice))
+            {
+                Console.WriteLine("Raqam kiriting!");
+                Thread.Sleep(5000);
+                Console.Clear();
+                continue;
+            }
+
+            switch (choice)
+            {
+                case 1:
+                    CreateUserAction(userService);
+                    break;
+
+                case 2:
+                    GetByIdAction(userService);
+                    break;
+
+                case 3:
+                    GetAllAction(userService);
+                    break;
+
+                case 4:
+                    UpdateUserAction(userService);
+                    break;
+
+                case 5:
+                    DeleteUserAction(userService);
+                    break;
+
+                case 0:
+                    isRunning = false;
+                    continue;
+
+                default:
+                    Console.WriteLine("Notugri tanlov!");
+                    break;
+            }
+        } ;
+    }
+
+    static void CreateUserAction(IUserService userService)
+    {
+        Console.Write("ID:");
+        if (!int.TryParse(Console.ReadLine(), out int id))
+        {
+            Console.WriteLine("ID butun son bulish kerak!");
+            return;
+        }
+
+        Console.Write("Name: ");
+        string name = Console.ReadLine();
+
+        Console.Write("Ages: ");
+        if (!int.TryParse(Console.ReadLine(), out int age))
+        {
+            Console.WriteLine("Age butun son bulish kerak!");
+            return;
+        }
+
+        Console.Write("Email: ");
+        string email = Console.ReadLine();
+
+        Console.Write("PhoneNumber: ");
+        string phoneNumber = Console.ReadLine();
+
+        var user = new User
+        {
+            Id = id,
+            Name = name,
+            Age = age,
+            Email = email,
+            PhoneNumber = phoneNumber
         };
 
-        User user2 = new User
+        userService.CreateUser(user);
+    }
+    static void GetByIdAction(IUserService userService)
+    {
+        Console.Write("ID:");
+        if (!int.TryParse(Console.ReadLine(), out int id))
         {
-            Id = 2,
-            Address = "Uzbekistan, Tashkent",
-            Email = "user@dotnet.uz",
-            FIO = "Abror Toshev Usmonovich",
-            PhoneNmber = "+998901234545",
-        };
+            Console.WriteLine("ID butun son bo'lishi kerak.");
+            return;
+        }
 
-        userService.CreateUser(newUser);
-        userService.CreateUser(user2);
-
-        User storageUser = userService.GetUserById(2);
+        User storageUser = userService.GetUserById(id);
         if (storageUser != null)
         {
-            userService.Print(storageUser);
-        }
-        else
-        {
-            Console.WriteLine("User topilmadi");
-        }
-
-        User updetedUser = new User
-        {
-            Id = 1,
-            Address = "Uzbekistan",
-            Email = "Test@uz.com",
-            FIO = "Akmal Qodirov Saidovich",
-            PhoneNmber = "+998887777777"
-        };
-
-        userService.UpdateUser(updetedUser);
-        userService.Print(newUser);
-
-        userService.DeleteUser(2);
-        var isDeletesUser = userService.GetUserById(2);
-
-        // Tekshirish uchun
-        if (isDeletesUser != null)
-        {
-            userService.Print(isDeletesUser);
+            userService.PrintUser(storageUser);
         }
         else
         {
@@ -63,4 +120,70 @@ internal class Program
         }
 
     }
+    static void GetAllAction(IUserService userService)
+    {
+        User[] users = userService.GetAllUsers();
+
+        if (users.Length == 0)
+        {
+            Console.WriteLine("Foydalanuvchilar yuq!");
+            return;
+        }
+
+        foreach (User user in users)
+        {
+            userService.PrintUser(user);
+            Console.WriteLine();
+        }
+
+    }
+    static void UpdateUserAction(IUserService userService)
+    {
+        Console.Write("Yangilanadigan user ID: ");
+        if (!int.TryParse(Console.ReadLine(), out int id))
+        {
+            Console.WriteLine("ID butun son bo'lishi kerak.");
+            return;
+        }
+
+        Console.Write("Name: ");
+        string name = Console.ReadLine();
+
+        Console.Write("Email: ");
+        string email = Console.ReadLine();
+
+        Console.Write("Age: ");
+        if (!int.TryParse(Console.ReadLine(), out int age))
+        {
+            Console.WriteLine("Age butun son bo'lishi kerak.");
+            return;
+        }
+
+        Console.Write("Phone number: ");
+        string phoneNumber = Console.ReadLine();
+
+        var updatedUser = new User
+        {
+            Id = id,
+            Name = name,
+            Email = email,
+            Age = age,
+            PhoneNumber = phoneNumber
+        };
+
+        userService.UpdateUser(updatedUser);
+    }
+    static void DeleteUserAction(IUserService userService)
+    {
+        Console.Write("User ID: ");
+        if (!int.TryParse(Console.ReadLine(), out int id))
+        {
+            Console.WriteLine("ID butun son bo'lishi kerak.");
+            return;
+        }
+
+        userService.DeleteUser(id);
+    }
 }
+
+

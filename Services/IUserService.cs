@@ -8,5 +8,6 @@ public interface IUserService
     User GetUserById(int id);
     void UpdateUser(User user);
     void DeleteUser(int id);
-    void Print(User user);
+    void PrintUser(User user);
+    User[] GetAllUsers();
 }
